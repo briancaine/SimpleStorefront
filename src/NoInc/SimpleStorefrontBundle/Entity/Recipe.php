@@ -202,6 +202,18 @@ class Recipe
         return $this->recipeIngredients;
     }
 
+    public function ingredientsAvailable()
+    {
+        foreach ($this->getRecipeIngredients() as $recipeIngredient)
+        {
+            $ingredient = $recipeIngredient->getIngredient();
+            if ($ingredient->getStock() < $recipeIngredient->getQuantity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function __sleep()
     {
         return array('id', 'name', 'price');

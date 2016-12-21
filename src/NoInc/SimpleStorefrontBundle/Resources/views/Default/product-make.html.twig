@@ -22,10 +22,12 @@
 				{% endfor %}
 			</ul>
 			</div><!-- /.editContent -->
-			
+
 			{% set remainingProducts = recipe.products|length %}
-			
+
+      {% if recipe.ingredientsAvailable() %}
 			<button type="submit" class="btn btn-lg btn-embossed btn-block btn-primary"><span class="fa"></span>Make One</button>
+      {% endif %}
 			
 			<span>{{ remainingProducts }} Remaining</span>
 			
