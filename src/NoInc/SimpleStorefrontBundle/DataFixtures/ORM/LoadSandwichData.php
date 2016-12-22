@@ -34,6 +34,7 @@ class LoadSandwichData extends AbstractFixture implements OrderedFixtureInterfac
         
         $recipe = new Recipe();
         $recipe->setName($recipeData["name"]);
+        $recipe->setImageURL($recipeData["image_url"]);
         $recipe->setPrice($recipeData["price"]);
         $manager->persist($recipe);
         $manager->flush();
@@ -76,6 +77,7 @@ class LoadSandwichData extends AbstractFixture implements OrderedFixtureInterfac
         return [
             "name" => "Sandwich",
             "price" => 1.50,
+            "image_url" => "https://i.imgur.com/TXbGH7a.jpg",
             "ingredients" => [
                 [
                     "name" => "Bread",

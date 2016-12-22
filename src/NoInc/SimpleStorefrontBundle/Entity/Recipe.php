@@ -44,6 +44,13 @@ class Recipe
     protected $price;
 
     /**
+     * Image URL
+     *
+     * @ORM\Column(name="`image_url`", type="string", nullable=false)
+     */
+    protected $image_url;
+
+    /**
      * @ORM\OneToMany(targetEntity="Product", mappedBy="recipe")
      * @ORM\JoinColumn(name="id", referencedColumnName="recipe_id", nullable=false)
      */
@@ -128,6 +135,29 @@ class Recipe
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set the value of image_url.
+     *
+     * @param string $image_url
+     * @return \NoInc\SimpleStorefrontBundle\Entity\Product
+     */
+    public function setImageURL($image_url)
+    {
+        $this->image_url = $image_url;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of image_url.
+     *
+     * @return string
+     */
+    public function getImageURL()
+    {
+        return $this->image_url;
     }
 
     /**
