@@ -40,6 +40,9 @@ class AdminController extends Controller
      */
     public function postMakeRecipeAction(Recipe $recipe)
     {
+        if (!$recipe->ingredientsAvailable()) {
+            throw new Exception("Not all ingredients available");
+        }
 
         $product = new Product();
         $product->setCreatedAt(time());
