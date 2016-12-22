@@ -1,0 +1,47 @@
+{% extends 'NoIncSimpleStorefrontBundle:Default:base.html.twig' %}
+
+{% block header %}
+{% endblock %}
+
+{% block body %}
+
+{% if app.request.hasPreviousSession %}
+  {% for type, messages in app.session.flashbag.all() %}
+    {% for message in messages %}
+      <div class="flash-{{ type }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+
+<div>
+  {% block debug_fos_user_content %}
+  {% endblock debug_fos_user_content %}
+</div>
+
+<div class="container">
+  <form action="{{ path('fos_user_security_check') }}" method="post">
+    {% if csrf_token %}
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <h1 class="text-center login-title">Login to continue</h1>
+            <div class="account-wall">
+                <form class="form-signin">
+                <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" placeholder="Username" required autofocus>
+                <input type="password" id="password" name="_password" class="form-control" placeholder="Password" required>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">
+                    Sign in</button>
+                <label>
+                  <input type="checkbox" id="remember_me" name="_remember_me" value="remember-me"> Remember me
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
