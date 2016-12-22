@@ -49,11 +49,7 @@ class AdminController extends Controller
         $product->setRecipe($recipe);
         $this->getDoctrine()->getEntityManager()->persist($product);
 
-        foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
-            $ingredient = $recipeIngredient->getIngredient();
-            $ingredient->setStock($ingredient->getStock() - $recipeIngredient->getQuantity());
-            $this->getDoctrine()->getEntityManager()->persist($ingredient);
-        }
+        $recipe->reduceIngredientStock($this->getDoctrine()->getEntityManager());
 
         $this->getDoctrine()->getEntityManager()->flush();
 

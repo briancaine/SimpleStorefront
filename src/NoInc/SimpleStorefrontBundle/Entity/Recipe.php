@@ -214,6 +214,14 @@ class Recipe
         return true;
     }
 
+    public function reduceIngredientStock($em) {
+        foreach ($this->getRecipeIngredients() as $recipeIngredient) {
+            $ingredient = $recipeIngredient->getIngredient();
+            $ingredient->setStock($ingredient->getStock() - $recipeIngredient->getQuantity());
+            $em->persist($ingredient);
+        }
+    }
+
     public function __sleep()
     {
         return array('id', 'name', 'price');
