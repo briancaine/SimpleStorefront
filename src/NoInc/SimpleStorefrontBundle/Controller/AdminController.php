@@ -48,8 +48,15 @@ class AdminController extends Controller
         $product->setCreatedAt(time());
         $product->setRecipe($recipe);
         $this->getDoctrine()->getEntityManager()->persist($product);
+
+        foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
+            $ingredient = $recipeIngredient->getIngredient();
+            $ingredient->setStock($ingredient->getStock() - $recipeIngredient->getQuantity());
+            $this->getDoctrine()->getEntityManager()->persist($ingredient);
+        }
+
         $this->getDoctrine()->getEntityManager()->flush();
-        
+
         return $this->redirectToRoute('admin_home');
     }
     
