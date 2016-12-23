@@ -14014,3 +14014,20 @@ div.dark_rounded #pp_full_res .pp_inline,div.dark_square #pp_full_res .pp_inline
         -webkit-animation: sharp 2s ease infinite;
         animation: sharp 2s ease infinite;
     }
+
+
+/* NOTE
+
+   Uhh, no clue where to add this. I guess this works?
+
+   ~brian
+
+*/
+
+.navbar-sm {
+  height: 28px;
+}
+
+body {
+    padding-top: 100px;
+}
