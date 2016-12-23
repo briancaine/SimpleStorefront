@@ -254,6 +254,6 @@ class Recipe
 
     public function __sleep()
     {
-        return array('id', 'name', 'price');
+        return array('id', 'name', 'price', 'image_url');
     }
 }
