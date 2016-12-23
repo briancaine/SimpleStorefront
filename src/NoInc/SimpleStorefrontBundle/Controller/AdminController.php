@@ -47,6 +47,7 @@ class AdminController extends Controller
         $product = new Product();
         $product->setCreatedAt(time());
         $product->setRecipe($recipe);
+        $product->setUser($this->get('security.token_storage')->getToken()->getUser());
         $this->getDoctrine()->getEntityManager()->persist($product);
 
         $recipe->reduceIngredientStock($this->getDoctrine()->getEntityManager());

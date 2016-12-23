@@ -36,7 +36,10 @@ class DefaultController extends Controller
         if ( $recipe->getProducts()->count() > 0 )
         {
             $product = $recipe->getProducts()->first();
+            $maker = $product->getUser();
+            $maker->setCapital($maker->getCapital() + $recipe->getPrice());
             $this->getDoctrine()->getEntityManager()->remove($product);
+            $this->getDoctrine()->getEntityManager()->persist($maker);
             $this->getDoctrine()->getEntityManager()->flush();
         }
         

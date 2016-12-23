@@ -48,6 +48,12 @@ class Product
      */
     protected $recipe;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="products")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     */
+    protected $user;
+
     public function __construct()
     {
     }
@@ -144,8 +150,31 @@ class Product
         return $this->recipe;
     }
 
+    /**
+     * Set User entity (many to one).
+     *
+     * @param \NoInc\SimpleStorefrontBundle\Entity\User $user
+     * @return \NoInc\SimpleStorefrontBundle\Entity\Product
+     */
+    public function setUser(User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get User entity (many to one).
+     *
+     * @return \NoInc\SimpleStorefrontBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
     public function __sleep()
     {
-        return array('id', 'recipe_id', 'created_at');
+        return array('id', 'recipe_id', 'created_at', 'user_id');
     }
 }
