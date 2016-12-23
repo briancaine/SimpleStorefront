@@ -1,4 +1,5 @@
 <div class="col-md-4">
+  <form action="{{ path('buy_ingredient', {'ingredient_id': ingredient.id}) }}" method="post">
 
 	<div class="pricing1">
 	
@@ -6,16 +7,19 @@
 		
 			<h2 class="editContent">{{ ingredient.name }}</h2>
 			
-			<p class="price "><b class="editContent">1 {{ ingredient.measure }} for ${{ recipe.price }}</b></p>
+			<p class="price "><b class="editContent">1 {{ ingredient.measure }} for ${{ ingredient.price }}</b></p>
 		
 		</div><!-- /.top -->
 		
 		<div class="bottom">
-			
-			<a href="" class="btn btn-lg btn-embossed btn-block btn-primary"><span class="fa"></span>Buy One</a>
+
+			{% if ingredient.canAfford(app.user) %}
+      <button type="submit" class="btn btn-lg btn-embossed btn-block btn-primary"><span class="fa"></span>Buy One</button>
+      {% endif %}
 		
 		</div><!-- /.bottom -->
 	
 	</div><!-- /.pricing1 -->
 
+</form>
 </div><!-- /.col-md-4 col -->

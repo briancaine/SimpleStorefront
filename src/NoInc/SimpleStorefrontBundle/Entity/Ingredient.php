@@ -245,6 +245,10 @@ class Ingredient
         return $this->recipeIngredients;
     }
 
+    public function canAfford($user) {
+        return $user->getCapital() >= $this->getPrice();
+    }
+
     public function __sleep()
     {
         return array('id', 'name', 'price', 'measure', 'stock', 'ingredientcol');

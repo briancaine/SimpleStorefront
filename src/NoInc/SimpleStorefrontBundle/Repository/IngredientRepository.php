@@ -10,4 +10,11 @@ namespace NoInc\SimpleStorefrontBundle\Repository;
  */
 class IngredientRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getIngredients() {
+        $ingredients = $this->createQueryBuilder('ingredient')
+                     ->addSelect('ingredient')
+                     ->getQuery()
+                     ->getResult();
+        return $ingredients;
+    }
 }

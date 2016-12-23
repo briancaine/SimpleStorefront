@@ -64,8 +64,28 @@ class AdminController extends Controller
      */
     public function postBuyIngredientAction(Ingredient $ingredient)
     {
-            
-        return $this->redirectToRoute('admin_home');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        if (!$ingredient->canAfford($user)) {
+            throw new Exception("User can't afford ingredient");
+        }
+        $user->setCapital($user->getCapital() - $ingredient->getPrice());
+        $ingredient->setStock($ingredient->getStock() + 1);
+        $this->getDoctrine()->getEntityManager()->persist($user);
+        $this->getDoctrine()->getEntityManager()->persist($ingredient);
+        $this->getDoctrine()->getEntityManager()->flush();
+        return $this->redirectToRoute('admin_ingredients');
     }
-    
+
+    /**
+     * @Route("/ingredients", name="admin_ingredients")
+     * @Method("GET")
+     */
+    public function getIngredientsAction() {
+        $ingredients = $this->getDoctrine()->getRepository('NoIncSimpleStorefrontBundle:Ingredient')->getIngredients();
+        $renderData = [];
+        $renderData['title'] = 'A Simple Storefront';
+        $renderData['ingredients'] = $ingredients;
+
+        return $this->render('NoIncSimpleStorefrontBundle:Default:ingredients.html.twig', $renderData);
+    }
 }
