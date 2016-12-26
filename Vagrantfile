@@ -42,7 +42,7 @@ apt-get install -y php7.0-xml
 apt-get install -y php7.0-zip
 
 echo "Installing Composer"
-curl -sS https://getcomposer.org/installer | /usr/bin/php -- --install-dir=/usr/bin --filename=composer
+curl -sS https://getcomposer.org/installer | /usr/local/bin/php -- --install-dir=/usr/bin --filename=composer
 
 echo "Installing mysql-server"
 apt-get install debconf-utils -y > /dev/null
