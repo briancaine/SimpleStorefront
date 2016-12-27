@@ -64,15 +64,12 @@ class AdminController extends Controller
      */
     public function postBuyIngredientAction(Ingredient $ingredient)
     {
+        $service = $this->get('app.ingredient_service');
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        if (!$ingredient->canAfford($user)) {
+        if (!$service->canUserAfford($user, $ingredient)) {
             throw new Exception("User can't afford ingredient");
         }
-        $user->setCapital($user->getCapital() - $ingredient->getPrice());
-        $ingredient->setStock($ingredient->getStock() + 1);
-        $this->getDoctrine()->getEntityManager()->persist($user);
-        $this->getDoctrine()->getEntityManager()->persist($ingredient);
-        $this->getDoctrine()->getEntityManager()->flush();
+        $service->buyUserIngredient($user, $ingredient);
         return $this->redirectToRoute('admin_ingredients');
     }
 
@@ -81,10 +78,11 @@ class AdminController extends Controller
      * @Method("GET")
      */
     public function getIngredientsAction() {
-        $ingredients = $this->getDoctrine()->getRepository('NoIncSimpleStorefrontBundle:Ingredient')->getIngredients();
+        $service = $this->get('app.ingredient_service');
+
         $renderData = [];
         $renderData['title'] = 'A Simple Storefront';
-        $renderData['ingredients'] = $ingredients;
+        $renderData['ingredients'] = $service->getIngredients();
 
         return $this->render('NoIncSimpleStorefrontBundle:Default:ingredients.html.twig', $renderData);
     }

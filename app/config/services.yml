@@ -4,6 +4,14 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+    # snagged this:
+    # from here: https://stackoverflow.com/questions/12223176/how-to-inject-a-repository-into-a-service-in-symfony2
+    app.ingredients_respository:
+      class: Doctrine\ORM\EntityRepository
+      factory: ["@doctrine.orm.entity_manager", getRepository]
+      arguments: ['NoIncSimpleStorefrontBundle:Ingredient']
+
+    app.ingredient_service:
+      class: NoInc\SimpleStorefrontBundle\Services\IngredientService
+      arguments: [ '@doctrine.orm.entity_manager', '@app.ingredients_respository' ]
