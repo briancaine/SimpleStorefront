@@ -18,7 +18,7 @@ class IngredientService
     }
 
     public function canUserAfford(User $user, Ingredient $ingredient) {
-        return $ingredient->canAfford($user);
+        return $user->getCapital() >= $ingredient->getPrice();
     }
 
     public function buyUserIngredient(User $user, Ingredient $ingredient) {
