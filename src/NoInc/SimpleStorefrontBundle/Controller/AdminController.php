@@ -23,7 +23,8 @@ class AdminController extends Controller
      */
     public function getAction()
     {
-        $recipes = $this->getDoctrine()->getRepository('NoIncSimpleStorefrontBundle:Recipe')->getRecipesAndIngredients();
+        $service = $this->get('app.recipe_service');
+        $recipes = $service->getRecipesAndIngredients();
         
         $renderData = [];
         
