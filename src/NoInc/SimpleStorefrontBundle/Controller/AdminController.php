@@ -40,19 +40,14 @@ class AdminController extends Controller
      */
     public function postMakeRecipeAction(Recipe $recipe)
     {
-        if (!$recipe->ingredientsAvailable()) {
+        $service = $this->get('app.recipe_service');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (!$service->ingredientsAvailable($recipe)) {
             throw new Exception("Not all ingredients available");
         }
 
-        $product = new Product();
-        $product->setCreatedAt(time());
-        $product->setRecipe($recipe);
-        $product->setUser($this->get('security.token_storage')->getToken()->getUser());
-        $this->getDoctrine()->getEntityManager()->persist($product);
-
-        $recipe->reduceIngredientStock($this->getDoctrine()->getEntityManager());
-
-        $this->getDoctrine()->getEntityManager()->flush();
+        $product = $service->userMakeRecipe($user, $recipe);
 
         return $this->redirectToRoute('admin_home');
     }

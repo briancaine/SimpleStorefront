@@ -7,11 +7,20 @@ services:
 
     # snagged this:
     # from here: https://stackoverflow.com/questions/12223176/how-to-inject-a-repository-into-a-service-in-symfony2
-    app.ingredients_respository:
+    app.ingredients_repository:
       class: Doctrine\ORM\EntityRepository
       factory: ["@doctrine.orm.entity_manager", getRepository]
       arguments: ['NoIncSimpleStorefrontBundle:Ingredient']
 
+    app.recipes_repository:
+      class: Doctrine\ORM\EntityRepository
+      factory: ["@doctrine.orm.entity_manager", getRepository]
+      arguments: ['NoIncSimpleStorefrontBundle:Recipe']
+
     app.ingredient_service:
       class: NoInc\SimpleStorefrontBundle\Services\IngredientService
-      arguments: [ '@doctrine.orm.entity_manager', '@app.ingredients_respository' ]
+      arguments: [ '@doctrine.orm.entity_manager', '@app.ingredients_repository' ]
+
+    app.recipe_service:
+      class: NoInc\SimpleStorefrontBundle\Services\RecipeService
+      arguments: [ '@doctrine.orm.entity_manager', '@app.recipes_repository' ]

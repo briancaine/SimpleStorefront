@@ -16,7 +16,8 @@ class DefaultController extends Controller
      */
     public function getAction()
     {
-        $recipes = $this->getDoctrine()->getRepository('NoIncSimpleStorefrontBundle:Recipe')->getRecipesAndIngredients();
+        $service = $this->get('app.recipe_service');
+        $recipes = $service->getRecipesAndIngredients();
         
         $renderData = [];
         
@@ -33,14 +34,11 @@ class DefaultController extends Controller
      */
     public function postBuyProductAction(Recipe $recipe)
     {
+        $service = $this->get('app.recipe_service');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if ( $recipe->getProducts()->count() > 0 )
         {
-            $product = $recipe->getProducts()->first();
-            $maker = $product->getUser();
-            $maker->setCapital($maker->getCapital() + $recipe->getPrice());
-            $this->getDoctrine()->getEntityManager()->remove($product);
-            $this->getDoctrine()->getEntityManager()->persist($maker);
-            $this->getDoctrine()->getEntityManager()->flush();
+            $service->userBuyRecipe($user, $recipe);
         }
         
         return $this->redirectToRoute('guest_home');
