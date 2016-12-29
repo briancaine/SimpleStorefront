@@ -24,3 +24,7 @@ services:
     app.recipe_service:
       class: NoInc\SimpleStorefrontBundle\Services\RecipeService
       arguments: [ '@doctrine.orm.entity_manager', '@app.recipes_repository' ]
+
+    app.shopping_cart_service:
+      class: NoInc\SimpleStorefrontBundle\Services\ShoppingCartService
+      arguments: ['@request_stack', '@doctrine.orm.entity_manager']

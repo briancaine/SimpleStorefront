@@ -1,0 +1,50 @@
+{% extends 'NoIncSimpleStorefrontBundle:Default:base.html.twig' %}
+
+{% block body %}
+
+{% set cart = shopping_cart_service.CurrentShoppingCart %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-10 col-md-offset-1">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Recipe</th>
+            <th class="text-center">Price</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% for item in cart.CartItems %}
+				    {% include 'NoIncSimpleStorefrontBundle:Default:cart-row.html.twig' with {'cart_item': item} %}
+				{% endfor %}
+
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>   </td>
+            <td><h3>Total</h3></td>
+            <td class="text-right"><h3>{{ cart.TotalPrice|number_format(2, '.', ',') }}</h3></td>
+          </tr>
+          <tr>
+            <td>   </td>
+            <td>
+              <a href="{{ path('guest_home') }}" class="btn btn-default">Continue Shopping</a>
+            </td>
+            <td>
+              <form action="{{ path('checkout_shopping_cart') }}" method="post">
+                <button type="submit" class="btn btn-success">Purchase Items</button>
+              </form>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+{{ dump(shopping_cart.CartItems) }}
+
+{% endblock %}

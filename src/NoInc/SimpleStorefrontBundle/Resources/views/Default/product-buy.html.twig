@@ -1,5 +1,5 @@
 <div class="col-md-4"> 
-<form action="{{ path('buy_product', {'recipe_id': recipe.id}) }}" method="post">
+<form action="{{ path('add_to_cart', {'recipe_id': recipe.id}) }}" method="post">
 
 	<div class="pricing1">
 	
@@ -33,7 +33,7 @@
 			{% set remainingProducts = recipe.products|length %}
 			
 			{% if remainingProducts > 0 %}
-				<button type="submit" class="btn btn-lg btn-embossed btn-block btn-primary"><span class="fa"></span>Buy One</button>
+				<button type="submit" class="btn btn-lg btn-embossed btn-block btn-primary"><span class="fa"></span>Add to cart</button>
 			{% endif %}
 			
 			<span>{{ remainingProducts }} Remaining</span>

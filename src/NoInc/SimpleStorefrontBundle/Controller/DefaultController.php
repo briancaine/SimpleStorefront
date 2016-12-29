@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -14,7 +15,7 @@ class DefaultController extends Controller
      * @Route("/", name="guest_home")
      * @Method("GET")
      */
-    public function getAction()
+    public function getAction(Request $request)
     {
         $service = $this->get('app.recipe_service');
         $recipes = $service->getRecipesAndIngredients();
@@ -26,7 +27,7 @@ class DefaultController extends Controller
             
         return $this->render('NoIncSimpleStorefrontBundle:Default:index.html.twig', $renderData);
     }
-    
+
     /**
      * @Route("/buy/{recipe_id}", name="buy_product")
      * @Method("POST")
@@ -43,6 +44,78 @@ class DefaultController extends Controller
         
         return $this->redirectToRoute('guest_home');
     }
-    
-    
+
+    /**
+     * @Route("/shopping_cart", name="shopping_cart")
+     * @Method("GET")
+     */
+    public function getShoppingCart()
+    {
+        $service = $this->get('app.shopping_cart_service');
+        $cart = $service->getCurrentShoppingCart();
+
+        $renderData = [];
+        $renderData['title'] = 'Shopping Cart';
+        $renderData['shopping_cart'] = $cart;
+
+        return $this->render('NoIncSimpleStorefrontBundle:Default:shopping-cart.html.twig', $renderData); 
+    }
+
+    /**
+     * @Route("/add_to_cart/{recipe_id}", name="add_to_cart")
+     * @Method("POST")
+     * @ParamConverter("recipe", class="NoIncSimpleStorefrontBundle:Recipe", options={"mapping": {"recipe_id": "id"}})
+     */
+    public function postAddToCartAction(Recipe $recipe)
+    {
+        $service = $this->get('app.shopping_cart_service');
+        $cart = $service->getCurrentShoppingCart();
+        $cart->addRecipe($recipe);
+        $cart->save();
+
+        return $this->redirectToRoute('guest_home');
+    }
+
+    /**
+     * @Route("/remove_from_cart/{index}", name="remove_from_cart")
+     * @Method("POST")
+     */
+    public function postRemoveFromCartAction($index)
+    {
+        $service = $this->get('app.shopping_cart_service');
+        $cart = $service->getCurrentShoppingCart();
+        $cart->removeItemByIndex($index);
+        $cart->save();
+
+        return $this->redirectToRoute('shopping_cart');
+    }
+
+    /**
+     * @Route("/checkout", name="checkout_shopping_cart")
+     * @Method("POST")
+     */
+    public function postCheckoutShoppingCartAction()
+    {
+        $recipe_service = $this->get('app.recipe_service');
+        $service = $this->get('app.shopping_cart_service');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $cart = $service->getCurrentShoppingCart();
+
+        $items = $cart->getCartItems();
+
+        while (count($items) > 0) {
+            $item = $items[0];
+            $cart->removeItemByIndex(0);
+            $cart->save();
+            $recipe = $item->getRecipe();
+
+            if ( $recipe->getProducts()->count() > 0 )
+            {
+                $recipe_service->userBuyRecipe($user, $recipe);
+            }
+            $items = $cart->getCartItems();
+        }
+
+        return $this->redirectToRoute('guest_home');
+    }
 }

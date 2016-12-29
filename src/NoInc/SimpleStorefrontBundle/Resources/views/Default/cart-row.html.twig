@@ -1,0 +1,18 @@
+<tr>
+
+  <td>
+    <img src="{{ cart_item.Recipe.ImageURL }}" class="col-md-6">
+    <h3>{{ cart_item.Recipe.Name }}</h3>
+  </td>
+
+  <td>
+    {{ cart_item.Recipe.Price|number_format(2, '.', ',') }}
+  </td>
+
+  <td>
+    <form action="{{ path('remove_from_cart', {'index': cart_item.Index}) }}" method="post">
+      <button type="submit" class="btn btn-danger">Remove Item</button>
+    </form>
+  </td>
+
+</tr>

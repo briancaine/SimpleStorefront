@@ -37,6 +37,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+        shopping_cart_service: '@app.shopping_cart_service'
 
 # Doctrine Configuration
 doctrine:

@@ -58,6 +58,12 @@
     							</ul> 		      
     							<ul class="nav navbar-nav navbar-right">
     								<li class="propClone">
+                      <a href="{{ path('shopping_cart') }}">
+                        {% set cart = shopping_cart_service.CurrentShoppingCart %}
+                        {{ cart.CartItems|length }} item{% if cart.PluralCount %}s{% endif %} in cart
+                      </a>
+                    </li>
+    								<li class="propClone">
                       {% if app.user %}
     									  <a href="{{ path('fos_user_security_logout') }}">Logout </span></a>
                       {% else %}
