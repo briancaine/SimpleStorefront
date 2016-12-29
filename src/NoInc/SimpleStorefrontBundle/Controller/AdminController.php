@@ -79,6 +79,7 @@ class AdminController extends Controller
         $renderData = [];
         $renderData['title'] = 'A Simple Storefront';
         $renderData['ingredients'] = $service->getIngredients();
+        $renderData['ingredient_service'] = $service;
 
         return $this->render('NoIncSimpleStorefrontBundle:Default:ingredients.html.twig', $renderData);
     }
