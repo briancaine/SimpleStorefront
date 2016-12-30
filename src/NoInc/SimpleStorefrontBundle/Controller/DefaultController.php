@@ -102,10 +102,12 @@ class DefaultController extends Controller
         $cart = $service->getCurrentShoppingCart();
 
         $items = $cart->getCartItems();
-error_log("debugx01 " . count($items) . '#');
+
+        if (count($items) == 0) {
+            return $this->redirectToRoute('guest_home');
+        }
 
         foreach ($items as $item) {
-error_log("debugx02 " . count($item->getIndex()) . '#');
             $cart->removeItemByIndex($item->getIndex());
             $recipe = $item->getRecipe();
 
@@ -116,6 +118,6 @@ error_log("debugx02 " . count($item->getIndex()) . '#');
         }
         $cart->save();
 
-        return $this->redirectToRoute('guest_home');
+        return $this->postCheckoutShoppingCartAction();
     }
 }
