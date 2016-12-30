@@ -102,15 +102,19 @@ class DefaultController extends Controller
         $cart = $service->getCurrentShoppingCart();
 
         $items = $cart->getCartItems();
-        $current_index = 0;
+error_log("debugx01 " . count($items) . '#');
 
         foreach ($items as $item) {
-            $cart->removeItemByIndex($current_index);
+error_log("debugx02 " . count($item->getIndex()) . '#');
+            $cart->removeItemByIndex($item->getIndex());
             $recipe = $item->getRecipe();
 
-            $current_index = $current_index + 1;
-            $cart->save();
+            if ( $recipe->getProducts()->count() > 0 )
+            {
+                $recipe_service->userBuyRecipe($user, $recipe);
+            }
         }
+        $cart->save();
 
         return $this->redirectToRoute('guest_home');
     }

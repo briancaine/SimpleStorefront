@@ -122,7 +122,14 @@ class User extends \FOS\UserBundle\Model\User
 
     public function removeItemByIndex($index) {
         $items = $this->getCartItems();
-        return $this->removeCartItem($items[$index]);
+
+        $current_index = 0;
+        foreach ($items as $item) {
+            if ($current_index == $index) {
+                return $this->removeCartItem($item);
+            }
+            $current_index = $current_index + 1;
+        }
     }
 
     public function addRecipe(Recipe $recipe) {
