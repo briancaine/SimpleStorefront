@@ -10,6 +10,7 @@
 namespace NoInc\SimpleStorefrontBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\EntityManager;
 
 /**
  * NoInc\SimpleStorefrontBundle\Entity\User
@@ -19,6 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User extends \FOS\UserBundle\Model\User
 {
+    protected $em;
+
     /**
      * ID of the User
      *
@@ -32,6 +35,12 @@ class User extends \FOS\UserBundle\Model\User
      * @ORM\Column(type="float", nullable=false)
      */
     protected $capital;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ORMCartItem", mappedBy="user")
+     * @ORM\JoinColumn(name="id", referencedColumnName="user_id", nullable=false)
+     */
+    protected $orm_cart_items;
 
     public function __construct()
     {
@@ -82,6 +91,84 @@ class User extends \FOS\UserBundle\Model\User
     public function getCapital()
     {
         return $this->capital;
+    }
+
+    /**
+     * Add cart item to collection (one to many).
+     *
+     * @param \NoInc\SimpleStorefrontBundle\Entity\ORMCartItem $cart_item
+     * @return \NoInc\SimpleStorefrontBundle\Entity\User
+     */
+    public function addCartItem(ORMCartItem $cart_item)
+    {
+        $this->orm_cart_items[] = $cart_item;
+
+        return $this;
+    }
+
+    /**
+     * Remove cart item from collection (one to many).
+     *
+     * @param \NoInc\SimpleStorefrontBundle\Entity\ORMCartItem $cart_item
+     * @return \NoInc\SimpleStorefrontBundle\Entity\User
+     */
+    public function removeCartItem(ORMCartItem $cart_item)
+    {
+        $this->orm_cart_items->removeElement($cart_item);
+        $this->em->remove($cart_item);
+
+        return $this;
+    }
+
+    public function removeItemByIndex($index) {
+        $items = $this->getCartItems();
+        return $this->removeCartItem($items[$index]);
+    }
+
+    public function addRecipe(Recipe $recipe) {
+        $item = new ORMCartItem();
+        $item->setRecipe($recipe);
+        $item->setUser($this);
+        $this->em->persist($item);
+        $res = $this->addCartItem($item);
+        $this->em->persist($item);
+        return $res;
+    }
+
+    /**
+     * Get cart item entity collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCartItems()
+    {
+        $current_index = 0;
+        foreach ($this->orm_cart_items as $item) {
+            $item->setIndex($current_index);
+            $current_index = $current_index + 1;
+        }
+        return $this->orm_cart_items;
+    }
+
+    /* I miss multiple inheritance... */
+    public function isPluralCount() {
+        return count($this->getCartItems()) != 1;
+    }
+
+    public function setEntityManager(EntityManager $em) {
+        $this->em = $em;
+    }
+
+    public function save() {
+        $this->em->flush();
+    }
+
+    public function getTotalPrice() {
+        $total = 0;
+        foreach ($this->getCartItems() as $item) {
+            $total = $total + $item->getRecipe()->getPrice();
+        }
+        return $total;
     }
 
     public function __sleep()

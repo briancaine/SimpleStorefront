@@ -102,18 +102,14 @@ class DefaultController extends Controller
         $cart = $service->getCurrentShoppingCart();
 
         $items = $cart->getCartItems();
+        $current_index = 0;
 
-        while (count($items) > 0) {
-            $item = $items[0];
-            $cart->removeItemByIndex(0);
-            $cart->save();
+        foreach ($items as $item) {
+            $cart->removeItemByIndex($current_index);
             $recipe = $item->getRecipe();
 
-            if ( $recipe->getProducts()->count() > 0 )
-            {
-                $recipe_service->userBuyRecipe($user, $recipe);
-            }
-            $items = $cart->getCartItems();
+            $current_index = $current_index + 1;
+            $cart->save();
         }
 
         return $this->redirectToRoute('guest_home');

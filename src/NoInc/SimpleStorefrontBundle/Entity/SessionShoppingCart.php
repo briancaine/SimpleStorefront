@@ -18,10 +18,13 @@ class SessionShoppingCart extends ShoppingCart
     }
 
     public function getCartItems() {
-        $items = $this->session->get('shopping_cart');
+        $items = [];
+        if ($this->session->has('shopping_cart')) {
+            $items = $this->session->get('shopping_cart');
+        }
         $res = [];
         $current_index = 0;
-        foreach ($this->session->get('shopping_cart') as $item) {
+        foreach ($items as $item) {
             $next_item = new SessionCartItem($item, $this->em);
             $next_item->setIndex($current_index);
             $current_index = $current_index + 1;
